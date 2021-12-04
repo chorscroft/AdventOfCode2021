@@ -1,24 +1,30 @@
-# Advent of Code Day 3
+# Advent of Code Day 4
 
 ## Read in the data
 data<-read.table("data/day04.txt",skip=2)
 numbers<-read.table("data/day04.txt",nrows=1,sep=",")
 
 # Part 1
+## Get size of bingo board
+bb_size<-ncol(data)
+
+## Get number of bingo boards
+n_bb<-nrow(data)/bb_size
+
 ## Function to check if a bingo board has been completed
 isComplete<-function(x){
-  for (i in 1:100){
-    if (sum(x[i*5-4,])==5|sum(x[i*5-3,])==5|sum(x[i*5-2,])==5|sum(x[i*5-1,])==5|sum(x[i*5,])==5){
-      return(i)
-    } else if (sum(x[(i*5-4):(i*5),1])==5|sum(x[(i*5-4):(i*5),2])==5|sum(x[(i*5-4):(i*5),3])==5|sum(x[(i*5-4):(i*5),4])==5|sum(x[(i*5-4):(i*5),5])==5){
-      return(i)
+  for (i in 1:n_bb){
+    for (j in 1:bb_size){
+      if (sum(x[i*bb_size+1-j,])==bb_size | sum(x[((i-1)*bb_size+1):(i*bb_size),j])==bb_size){
+        return(i)
+      }
     }
   }
   return(NA)
 }
 
 ## Initialise matrix of blank bingo boards
-checked<-matrix(F,nrow=500,ncol=5)
+checked<-matrix(F,nrow=n_bb*bb_size,ncol=bb_size)
 
 ## Call numbers until a board is complete
 i<-0
@@ -29,20 +35,20 @@ while (is.na(isComplete(checked))){
 board<-isComplete(checked)
 
 ## Find the result
-sum(data[(board*5-4):(board*5),1:5][checked[(board*5-4):(board*5),1:5]==F])*numbers[1,i]
+sum(data[((board-1)*bb_size+1):(board*bb_size),1:bb_size][checked[((board-1)*bb_size+1):(board*bb_size),1:bb_size]==F])*numbers[1,i]
 
 # Part 2
 ## Function to check if all but one bingo boards have been completed
 isAllButOneComplete<-function(x){
-  complete<-rep(F,100)
-  for (i in 1:100){
-    if (sum(x[i*5-4,])==5|sum(x[i*5-3,])==5|sum(x[i*5-2,])==5|sum(x[i*5-1,])==5|sum(x[i*5,])==5){
-      complete[i]<-T
-    } else if (sum(x[(i*5-4):(i*5),1])==5|sum(x[(i*5-4):(i*5),2])==5|sum(x[(i*5-4):(i*5),3])==5|sum(x[(i*5-4):(i*5),4])==5|sum(x[(i*5-4):(i*5),5])==5){
-      complete[i]<-T
-    } 
+  complete<-rep(F,n_bb)
+  for (i in 1:n_bb){
+    for (j in 1:bb_size){
+      if (sum(x[i*bb_size+1-j,])==bb_size | sum(x[((i-1)*bb_size+1):(i*bb_size),j])==bb_size){
+        complete[i]<-T
+      }
+    }
   }
-  if (sum(complete)==99){
+  if (sum(complete)==n_bb-1){
     return(which(complete==F))
   }
   return(NA)
@@ -50,22 +56,22 @@ isAllButOneComplete<-function(x){
 
 ## Function to check if all bingo boards have been completed
 isAllComplete<-function(x){
-  complete<-rep(F,100)
-  for (i in 1:100){
-    if (sum(x[i*5-4,])==5|sum(x[i*5-3,])==5|sum(x[i*5-2,])==5|sum(x[i*5-1,])==5|sum(x[i*5,])==5){
-      complete[i]<-T
-    } else if (sum(x[(i*5-4):(i*5),1])==5|sum(x[(i*5-4):(i*5),2])==5|sum(x[(i*5-4):(i*5),3])==5|sum(x[(i*5-4):(i*5),4])==5|sum(x[(i*5-4):(i*5),5])==5){
-      complete[i]<-T
-    } 
+  complete<-rep(F,n_bb)
+  for (i in 1:n_bb){
+    for (j in 1:bb_size){
+      if (sum(x[i*bb_size+1-j,])==bb_size | sum(x[((i-1)*bb_size+1):(i*bb_size),j])==bb_size){
+        complete[i]<-T
+      }
+    }
   }
-  if (sum(complete)==100){
+  if (sum(complete)==n_bb){
     return(T)
   }
   return(NA)
 }
 
 ## Initialise matrix of blank bingo boards
-checked<-matrix(F,nrow=500,ncol=5)
+checked<-matrix(F,nrow=n_bb*bb_size,ncol=bb_size)
 
 ## Call numbers until all but one board is complete
 i<-0
@@ -84,4 +90,4 @@ while (is.na(isAllComplete(checked))){
 }
 
 ## Find the result
-sum(data[(board*5-4):(board*5),1:5][checked[(board*5-4):(board*5),1:5]==F])*numbers[1,i]
+sum(data[((board-1)*bb_size+1):(board*bb_size),1:bb_size][checked[((board-1)*bb_size+1):(board*bb_size),1:bb_size]==F])*numbers[1,i]
