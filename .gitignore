@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 AdventOfCode2021.Rproj
+*.DS_Store
