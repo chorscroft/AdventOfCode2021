@@ -151,4 +151,5 @@ for(i in 1:length(incomplete)){
 
 ## output final value (stop R using scientific notation)
 options(scipen=999)
-sort(sums)
+sums<-sort(sums)
+sums[(length(sums)+1)/2]
