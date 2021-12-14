@@ -43,3 +43,6 @@ for (i in 1:nrow(instruct)){
 }
 
 ## Visually inspect result to get code
+toplot<-dots
+toplot[toplot>0]<-1
+image(t(toplot[nrow(toplot):1,]))
